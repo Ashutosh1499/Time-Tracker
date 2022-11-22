@@ -124,8 +124,10 @@ getOverallDiffAndDisplayIt = tDiffrnce => {
 	totalHrs /= 60;
 	document.getElementById('totalHours').textContent =
 		Math.round(totalHrs * 100) / 100 + ' Hrs';
+	let perc = (totalHrs / 24) * 100;
+	console.log(perc);
 	document.getElementById('todayPercentage').textContent =
-		(totalHrs / 24) * 100 + '%';
+		Math.round(perc * 100) / 100 + '%';
 };
 //function for changing the selected task from the user end
 selectList = boxValue => {
