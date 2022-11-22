@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Time Tracking</title>
+		<link rel="shortcut icon" href="imgicons/clockIcon.png" />
+		<link rel="stylesheet" href="index.css" />
+	</head>
+	<body>
+		<div class="timerContainer flex-box-end" id="timer"></div>
+		<div class="actionAlert flex-box-center" id="actionAlert"></div>
+		<div class="main-container roundCorners10px">
+			<div class="upper-container flex-box-center">
+				<div class="input-container">
+					<div class="select-box-area">
+						<div class="elements flex-box-start" onclick="selectList('1')">
+							Daily Work
+						</div>
+						<div class="elements flex-box-start" onclick="selectList('2')">
+							Portfolio
+						</div>
+						<div class="elements flex-box-start" onclick="selectList('3')">
+							Coursera
+						</div>
+						<div class="elements flex-box-start" onclick="selectList('4')">
+							DSA
+						</div>
+						<div
+							class="elements flex-box-start"
+							onclick="selectList('0')"
+							id="topElement"
+						>
+							-Select-
+							<img src="imgicons/down-arrow.png" alt="" id="dropDown" />
+						</div>
+					</div>
+					<div class="button-area flex-box-center">
+						<div class="clock-in-button-area flex-box-center">
+							<button class="roundCorners5px" onclick="logIn()">
+								Clock In
+							</button>
+						</div>
+						<div class="clock-out-button-area flex-box-center">
+							<button class="roundCorners5px" onclick="logOut()">
+								Clock Out
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="graph-display-container flex-box-center">
+					<div class="statusShow">
+						<div class="ongoingTask1 flex-box-start" id="ongoingTask1">
+							<span> Status </span>
+						</div>
+						<div class="ongoingTask2 flex-box-start" id="ongoingTask2">
+							<span> Prev </span>
+						</div>
+						<div class="ongoingTask3 flex-box-start" id="ongoingTask3">
+							<span> Older </span>
+						</div>
+					</div>
+					<div class="hoursDisplay flex-box-center">
+						<div class="todayHours flex-box-center" id="todayPercentage"></div>
+						<div class="todayHours flex-box-center" id="totalHours"></div>
+					</div>
+				</div>
+			</div>
+			<div class="lower-container">
+				<div class="date-scrollBar"></div>
+				<div class="data-display"></div>
+			</div>
+		</div>
+	</body>
+	<script src="/index.js"></script>
+	<!-- <script src="/test.js"></script> -->
+</html>
