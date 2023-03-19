@@ -21,9 +21,15 @@ todayDateEmptyObj[`${todayDate}`] = {
 };
 //check if the local storage is present, if not, initialize
 if (projList == null) {
-	localStorage.setItem('projectList', JSON.stringify(emptyObj));
+	projList = emptyObj;
+	projList[0] = 'Daily Work';
+	projList[1] = 'Portfolio';
+	projList[2] = 'AlgoExpert';
+	projList[3] = 'LeetCode';
+	localStorage.setItem('projectList', JSON.stringify(projList));
 	projList = localStorage.getItem('projectList');
 	projList = JSON.parse(projList);
+	console.log(projList);
 }
 if (clockData == null) {
 	localStorage.setItem('clockInOutData', JSON.stringify(emptyObj));
@@ -40,16 +46,20 @@ updateStatus = () => {
 	let ongoingTask1 = document.getElementById('ongoingTask1');
 	let ongoingTask2 = document.getElementById('ongoingTask2');
 	let ongoingTask3 = document.getElementById('ongoingTask3');
+	let todayPercentage = document.getElementById('todayPercentage');
+	let totalHours = document.getElementById('totalHours');
 	let todayDateObj = clockData[`${todayDate}`];
 	let stats = 'No task Running';
 	let prev = 'No data found';
 	let older = 'No data found';
 	let reverseCId = Object.keys(todayDateObj).reverse();
-	ongoingTask1.style.borderColor = 'red';
+	todayPercentage.style.borderColor = 'red';
+	totalHours.style.borderColor = 'red';
 	if (reverseCId.length != 0) {
 		if (todayDateObj[`${reverseCId[0]}`].clockOutTime == '') {
-			stats = 'Working on ' + todayDateObj[`${reverseCId[0]}`].projectName;
-			ongoingTask1.style.borderColor = 'blue';
+			stats = todayDateObj[`${reverseCId[0]}`].projectName;
+			todayPercentage.style.borderColor = 'rgb(27, 235, 37)';
+			totalHours.style.borderColor = 'rgb(27, 235, 37)';
 		}
 		let len = reverseCId.length;
 		let i = 0;
@@ -120,12 +130,12 @@ secondsDiff = (time1, time2) => {
 };
 //get overall time difference in hrs
 getOverallDiffAndDisplayIt = tDiffrnce => {
-	let totalHrs = tDiffrnce[0] * 60 + tDiffrnce[1] + parseInt(tDiffrnce[2] / 60);
-	totalHrs /= 60;
+	let totalMins =
+		tDiffrnce[0] * 60 + tDiffrnce[1] + Math.round(tDiffrnce[2] / 60);
+	totalMins /= 60;
 	document.getElementById('totalHours').textContent =
-		Math.round(totalHrs * 100) / 100 + ' Hrs';
-	let perc = (totalHrs / 24) * 100;
-	console.log(perc);
+		Math.round(totalMins * 100) / 100 + ' Hrs';
+	let perc = (totalMins / 24) * 100;
 	document.getElementById('todayPercentage').textContent =
 		Math.round(perc * 100) / 100 + '%';
 };
@@ -152,10 +162,10 @@ selectList = boxValue => {
 				selectBoxValue = 'Portfolio';
 				break;
 			case '3':
-				selectBoxValue = 'Coursera';
+				selectBoxValue = 'AlgoExpert';
 				break;
 			case '4':
-				selectBoxValue = 'DSA';
+				selectBoxValue = 'LeetCode';
 				break;
 			case '0':
 				selectBoxValue = '-Select-';
@@ -211,12 +221,9 @@ clockInWithDW = (todayDateObj, taskName, id) => {
 //login fxn
 logIn = () => {
 	let taskName = document.getElementById('topElement').value;
+	console.log(taskName);
 	if (checkIfNoTaskSelected(taskName) < 0) {
 		return;
-	}
-	let flag1 = 0;
-	if (taskName == 'Daily Work') {
-		flag1 = 1;
 	}
 	let lastCId = 'cid-1';
 	let todayDateObj = clockData[`${todayDate}`];
@@ -252,14 +259,17 @@ logIn = () => {
 //logout fxn
 logOut = () => {
 	let taskName = document.getElementById('topElement').value;
+	console.log(taskName);
 	if (checkIfNoTaskSelected(taskName) < 0) {
 		return;
 	}
+	console.log('Hello');
 	let todayDateObj = clockData[`${todayDate}`];
 	let lastCId = '';
 	for (const eachEntry in todayDateObj) {
 		if (todayDateObj[`${eachEntry}`].clockOutTime == '') lastCId = eachEntry;
 	}
+	console.log(lastCId);
 	if (lastCId == '') {
 		actionAlertAppear();
 		actionAlert.textContent = 'Selected task not running';
@@ -284,6 +294,62 @@ logOut = () => {
 	}
 	updateStatus();
 	showPresentDayWorkingHours();
+	calculateTimeForEachTask();
 };
+
+// displaying each project working hours
+let createTableRow = (sno, tName, t1, t2) => {
+	return `<tr><td>${sno}.</td><td>${tName}</td><td>${t1} Hrs</td><td>${t2} Hrs</td></tr>`;
+};
+
+let eachDayTimeCalculation = (logs, projName) => {
+	let tDiff = [0, 0, 0];
+	let hrs = 0;
+	Object.keys(logs).forEach(eachLog => {
+		if (logs[eachLog].projectName === projName) {
+			if (logs[eachLog].clockOutTime !== '') {
+				let eachDiff = secondsDiff(
+					logs[eachLog].clockInTime,
+					logs[eachLog].clockOutTime,
+				);
+				tDiff[0] += eachDiff[0];
+				tDiff[1] += eachDiff[1];
+				tDiff[2] += eachDiff[2];
+			}
+		}
+	});
+	let totalMins = tDiff[0] * 60 + tDiff[1] + Math.round(tDiff[2] / 60);
+	totalMins /= 60;
+	hrs += Math.round(totalMins * 100) / 100;
+	return hrs;
+};
+
+let calculateTimeForEachTask = () => {
+	let sno = 1;
+	let tableBody = document.getElementById('tableBody');
+	tableBody.innerHTML = '';
+	Object.keys(projList).forEach(key => {
+		let keyValue = projList[key];
+		let totalHours = 0;
+		let todayHours = 0;
+		Object.keys(clockData).forEach(cData => {
+			let eachDateData = clockData[cData];
+			let eachHrs = eachDayTimeCalculation(eachDateData, keyValue);
+			if (cData === todayDate) {
+				todayHours = eachHrs;
+			}
+			totalHours += eachHrs;
+		});
+		tableBody.innerHTML += createTableRow(
+			sno,
+			keyValue,
+			todayHours,
+			totalHours,
+		);
+		sno++;
+	});
+};
+
 updateStatus();
 showPresentDayWorkingHours();
+calculateTimeForEachTask();
