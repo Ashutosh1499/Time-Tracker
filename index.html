@@ -4,7 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Time Tracking Website</title>
+		<title>Time Tracker</title>
 		<link rel="shortcut icon" href="imgicons/clockIcon.png" />
 		<link rel="stylesheet" href="index.css" />
 	</head>
@@ -22,10 +22,10 @@
 							Portfolio
 						</div>
 						<div class="elements flex-box-start" onclick="selectList('3')">
-							Coursera
+							AlgoExpert
 						</div>
 						<div class="elements flex-box-start" onclick="selectList('4')">
-							DSA
+							LeetCode
 						</div>
 						<div
 							class="elements flex-box-start"
@@ -34,6 +34,12 @@
 						>
 							-Select-
 							<img src="imgicons/down-arrow.png" alt="" id="dropDown" />
+						</div>
+						<div class="instruction">
+							<span
+								>Select one the task from the list and start working on
+								it.</span
+							>
 						</div>
 					</div>
 					<div class="button-area flex-box-center">
@@ -68,11 +74,29 @@
 				</div>
 			</div>
 			<div class="lower-container">
-				<div class="date-scrollBar"></div>
-				<div class="data-display"></div>
+				<div class="data-display flex-box-start2">
+					<div class="data-table">
+						<table>
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Task Name</th>
+									<th>Today's Time</th>
+									<th>Total Time</th>
+								</tr>
+							</thead>
+							<tbody id="tableBody"></tbody>
+							<tbody></tbody>
+						</table>
+					</div>
+				</div>
 			</div>
+		</div>
+		<div class="disclaimer flex-box-center">
+			<div class="info">Kindly Switch to Laptop or pc.</div>
 		</div>
 	</body>
 	<script src="./Js/mainFxns.js"></script>
+	<script src="./Js/displays.js"></script>
 	<!-- <script src="/test.js"></script> -->
 </html>
